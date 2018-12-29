@@ -7,7 +7,7 @@ LDFLAGS+= -lg2s -lz
 	cd mpslib; bash ./configure.sh
 	$(MAKE) -C mpslib $@
 
-%.o: src/%.cpp 
+%.o: src/%.cpp
 	$(CXX) -c -o $@ $< $(CFLAGS) $(CXXFLAGS) $(INC) $(LIBINC)
 
 ds: ds.o
