@@ -1,24 +1,20 @@
 CXXFLAGS+= -std=c++11
-INC+=-I../G2S/include
-LIB_PATH+=-L../G2S/build/c++-build
+INC+=-I../../../include
+LIB_PATH+=-L$(DEST_DIR_EXTENSION)
 LDFLAGS+= -lg2s -lz
 
-.DEFAULT:
-	cd mpslib; bash ./configure.sh
-	$(MAKE) -C mpslib $@
-
-%.o: src/%.cpp
+%.o: src/%.cpp 
 	$(CXX) -c -o $@ $< $(CFLAGS) $(CXXFLAGS) $(INC) $(LIBINC)
 
 ds: ds.o
 	$(CXX) -o $@ $^ $(LIB_PATH) $(LDFLAGS)
 
-wrapper: ds
+build: ds
 	echo test
 
-install: wrapper
-	echo test2
-	#mkdir -p ../3party_bin/ && which deesseOMP 2>/dev/null | xargs -I{} ln -s {} ../3party_bin/deesseOMP 2>/dev/null || exit 0
+install: build
+	cp -f ds $(DEST_DIR_EXTENSION)
+	mkdir -p $(DEST_DIR_EXTENSION)/../3party_bin/ && which deesseOMP 2>/dev/null | xargs -I{} ln -s {} $(DEST_DIR_EXTENSION)/../3party_bin/deesseOMP 2>/dev/null || exit 0
 
 algoNames:
 	ln -sf ../algosName.config algosName.config
