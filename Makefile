@@ -6,15 +6,18 @@ LDFLAGS+= -lg2s -lz
 %.o: src/%.cpp 
 	$(CXX) -c -o $@ $< $(CFLAGS) $(CXXFLAGS) $(INC) $(LIBINC)
 
-ds: ds.o
+ds_randLab: ds.o
 	$(CXX) -o $@ $^ $(LIB_PATH) $(LDFLAGS)
 
-build: ds
-	echo test
+build: ds_randLab
+	echo "build ds_randLab"
 
 install: build
 	cp -f ds $(DEST_DIR_EXTENSION)
 	mkdir -p $(DEST_DIR_EXTENSION)/../3party_bin/ && which deesseOMP 2>/dev/null | xargs -I{} ln -s {} $(DEST_DIR_EXTENSION)/../3party_bin/deesseOMP 2>/dev/null || exit 0
+	echo "ds	./ds_randLab	-ti,-di" >> $(DEST_DIR_EXTENSION)/algosName.config
+	echo "DirectSampling	./ds_randLab	-ti,-di" >> $(DEST_DIR_EXTENSION)/algosName.config
+	echo "DS	./ds_randLab	-ti,-di" >> $(DEST_DIR_EXTENSION)/algosName.config
 
 algoNames:
 	ln -sf ../algosName.config algosName.config
