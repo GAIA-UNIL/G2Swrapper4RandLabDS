@@ -21,4 +21,4 @@ algoNames:
 
 clean:
 	rm -rf *.o
-	rm ds
+	rm -r ds
