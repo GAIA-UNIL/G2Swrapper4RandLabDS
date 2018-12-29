@@ -13,7 +13,7 @@ build: ds_randLab
 	echo "build ds_randLab"
 
 install: build
-	cp -f ds $(DEST_DIR_EXTENSION)
+	cp -f ds_randLab $(DEST_DIR_EXTENSION)
 	mkdir -p $(DEST_DIR_EXTENSION)/../3party_bin/ && which deesseOMP 2>/dev/null | xargs -I{} ln -s {} $(DEST_DIR_EXTENSION)/../3party_bin/deesseOMP 2>/dev/null || exit 0
 	echo "ds	./ds_randLab	-ti,-di" >> $(DEST_DIR_EXTENSION)/algosName.config
 	echo "DirectSampling	./ds_randLab	-ti,-di" >> $(DEST_DIR_EXTENSION)/algosName.config
@@ -24,4 +24,4 @@ algoNames:
 
 clean:
 	rm -rf *.o
-	rm -rf ds
+	rm -rf ds_randLab
