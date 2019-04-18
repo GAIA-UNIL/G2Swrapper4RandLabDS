@@ -193,7 +193,7 @@ int main(int argc, char const *argv[]) {
 	// LOOK FOR SETINGS
 
 	std::vector<float> thresholds;		// threshold for DS ...
-	int nbNeighbors=-1;						// number of nighbors QS, DS ...
+	std::vector<unsigned> nbNeighbors;						// number of nighbors QS, DS ...
 	float mer=std::nanf("0");				// maximum exploration ratio, called f in ds
 	float nbCandidate=std::nanf("0");		// 1/f for QS
 	float narrowness=std::nanf("0");		// narrowness for NDS
@@ -238,9 +238,11 @@ int main(int argc, char const *argv[]) {
 	}
 	arg.erase("-nw");
 
-	if (arg.count("-n") == 1)
+	if (arg.count("-n") >= 1)
 	{
-		nbNeighbors=atoi((arg.find("-n")->second).c_str());
+		for (auto val=arg.lower_bound("-n"); val!=arg.upper_bound("-n"); val++){
+			nbNeighbors.push_back(atoi((val->second).c_str()));
+		}
 	}
 	arg.erase("-n");
 
@@ -271,18 +273,24 @@ int main(int argc, char const *argv[]) {
 
 
 	// special DS
-	float alpha=0;
-	int distanceToCenterForNeighbour=-1;
+	std::vector<float> alpha;
+	std::vector<unsigned> distanceToCenterForNeighbour;
 
-	if (arg.count("-alpha") == 1)
+	if (arg.count("-alpha") >= 1)
 	{
-		sscanf((arg.find("-alpha")->second).c_str(),"%f",&alpha);
+		for (auto val=arg.lower_bound("-alpha"); val!=arg.upper_bound("-alpha"); val++){
+			float alphaLocal;
+			sscanf((val->second).c_str(),"%f",&alphaLocal);
+			distanceToCenterForNeighbour.push_back(alphaLocal);
+		}
 	}
 	arg.erase("-alpha");
 
-	if (arg.count("-Ndc") == 1)
+	if (arg.count("-Ndc") >= 1)
 	{
-		distanceToCenterForNeighbour=atoi((arg.find("-Ndc")->second).c_str());
+		for (auto val=arg.lower_bound("-Ndc"); val!=arg.upper_bound("-Ndc"); val++){
+			distanceToCenterForNeighbour.push_back(atoi((val->second).c_str()));
+		}
 	}
 	arg.erase("-Ndc");
 
@@ -292,7 +300,7 @@ int main(int argc, char const *argv[]) {
 
 	// precheck | check what is mandatory
 
-	if(nbNeighbors<0){
+	if(nbNeighbors.size()<0){
 		run=false;
 		fprintf(reportFile, "%s\n", "number of neighbor not valide" );
 	}
@@ -442,16 +450,27 @@ int main(int argc, char const *argv[]) {
 
 		for (int i = 0; i < destinationImage._types.size(); ++i)
 		{
-			fprintf(dsConfigFile, "%d %d %d\n", distanceToCenterForNeighbour, distanceToCenterForNeighbour*(destinationImage._dims.size()>1), distanceToCenterForNeighbour*(destinationImage._dims.size()>2)); // write dimension of simulation
+			unsigned dtcfn=distanceToCenterForNeighbour[i];
+			if(distanceToCenterForNeighbour.size()>i)
+				dtcfn=distanceToCenterForNeighbour[i];
+			else
+				dtcfn=-1;
+			fprintf(dsConfigFile, "%d %d %d\n", dtcfn, dtcfn*(destinationImage._dims.size()>1), dtcfn*(destinationImage._dims.size()>2)); // write dimension of simulation
 			fprintf(dsConfigFile, "%d %d %d\n", 1, 1, 1); // suppose non anisotropy
 			fprintf(dsConfigFile, "%d %d %d\n", 0, 0, 0); // suppose non rotation
-			fprintf(dsConfigFile, "%f\n",alpha);
+			unsigned localAlpha=alpha[i];
+			if(alpha.size()>i)
+				localAlpha=alpha[i];
+			else
+				localAlpha=0;
+			fprintf(dsConfigFile, "%f\n",localAlpha);
 		}
 		fprintf(dsConfigFile, "\n");
 
 		for (int i = 0; i < destinationImage._types.size(); ++i)
 		{
-			fprintf(dsConfigFile, "%d ",nbNeighbors); // NEIGHBORING
+
+			fprintf(dsConfigFile, "%d ",((nbNeighbors.size()>i)? nbNeighbors[i] : 1 )); // NEIGHBORING
 		}
 		fprintf(dsConfigFile, "\n");
 		fprintf(dsConfigFile, "\n");
