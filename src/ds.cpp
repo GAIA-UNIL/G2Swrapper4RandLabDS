@@ -458,11 +458,9 @@ int main(int argc, char const *argv[]) {
 			fprintf(dsConfigFile, "%d %d %d\n", dtcfn, dtcfn*(destinationImage._dims.size()>1), dtcfn*(destinationImage._dims.size()>2)); // write dimension of simulation
 			fprintf(dsConfigFile, "%d %d %d\n", 1, 1, 1); // suppose non anisotropy
 			fprintf(dsConfigFile, "%d %d %d\n", 0, 0, 0); // suppose non rotation
-			unsigned localAlpha=alpha[i];
+			float localAlpha=0;
 			if(alpha.size()>i)
 				localAlpha=alpha[i];
-			else
-				localAlpha=0;
 			fprintf(dsConfigFile, "%f\n",localAlpha);
 		}
 		fprintf(dsConfigFile, "\n");
