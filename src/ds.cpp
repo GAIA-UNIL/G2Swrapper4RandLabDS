@@ -281,7 +281,7 @@ int main(int argc, char const *argv[]) {
 		for (auto val=arg.lower_bound("-alpha"); val!=arg.upper_bound("-alpha"); val++){
 			float alphaLocal;
 			sscanf((val->second).c_str(),"%f",&alphaLocal);
-			distanceToCenterForNeighbour.push_back(alphaLocal);
+			alpha.push_back(alphaLocal);
 		}
 	}
 	arg.erase("-alpha");
